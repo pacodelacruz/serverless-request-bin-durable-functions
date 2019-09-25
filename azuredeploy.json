@@ -1,0 +1,209 @@
+{
+    "$schema": "http://schemas.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "Used to name the different components of the Serverless Request Bin. I.e. the Function App, the consumption plan, Application Insights and the Azure Storage account."
+      }
+    },
+    "appInsightsRegion": {
+      "type": "string",
+      "allowedValues": [
+        "eastus",
+        "eastus2",
+        "southcentralus",
+        "westus",
+        "westus2",
+        "centralus",
+        "southafricanorth",
+        "australiaeast",
+        "southeastasia",
+        "centralindia",
+        "eastasia",
+        "japaneast",
+        "koreacentral",
+        "canadacentral",
+        "northeurope",
+        "uksouth",
+        "westeurope",
+        "francecentral"
+      ],
+      "metadata": {
+        "description": "Given that App Insights is not available in all regions, choose the closest region to the resource group. "
+      }
+    },
+    "requestBinRenderer": {
+      "type": "string",
+      "defaultValue": "Liquid",
+      "allowedValues": [
+        "Liquid"
+      ],
+      "metadata": {
+        "description": "App Setting to configure the Request Bin Renderer to return request bin history to the user."
+      }
+    },
+    "RequestBinRendererTemplate": {
+      "type": "string",
+      "defaultValue": "DarkHtmlRender.liquid",
+      "metadata": {
+        "description": "File name of the Liquid template to use while rendering the request bin history"
+      }
+    },
+    "requestBinMaxSize": {
+      "type": "int",
+      "defaultValue": 20,
+      "metadata": {
+        "description": "Max number of request to store in the Request Bin"
+      }
+    },
+    "requestBodyMaxLength": {
+      "type": "int",
+      "defaultValue": 128000,
+      "metadata": {
+        "description": "Max number of characters to read and store of a request body. If a request body is larger than this limit, the body will be truncated."
+      }
+    }
+  },
+  "variables": {
+    "functionAppName": "[concat(parameters('appName'), '-func')]",
+    "hostingPlanName": "[concat(parameters('appName'), '-plan')]",
+    "applicationInsightsName": "[concat(parameters('appName'), '-appins')]",
+    "repoURL": "https://github.com/pacodelacruz/serverless-request-bin-azure-functions.git",
+    "branch": "master",
+    "storageAccountPrefix": "[if(greaterOrEquals(length(parameters('appName')), 9), substring(parameters('appName'), 0, 9), substring(parameters('appName'), 0, length(parameters('appName'))))]",
+    "storageAccountName": "[concat(variables('storageAccountPrefix'), 'st', uniquestring(resourceGroup().id))]",
+    "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+  },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2018-07-01",
+            "kind": "StorageV2",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2016-09-01",
+            "name": "[variables('hostingPlanName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic",
+                "size": "Y1",
+                "family": "Y",
+                "capacity": 0
+            },
+            "kind": "functionapp",
+            "properties": {
+                "perSiteScaling": false,
+                "reserved": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "name": "[variables('applicationInsightsName')]",
+            "apiVersion": "2015-05-01",
+            "location": "[parameters('appInsightsRegion')]",
+            "tags": {
+                "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('applicationInsightsName'))]": "Resource"
+            },
+            "properties": {
+                "ApplicationId": "[variables('applicationInsightsName')]",
+                "Request_Source": "IbizaWebAppExtensionCreate"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-08-01",
+            "name": "[variables('functionAppName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "functionapp",
+            "properties": {
+                "name": "[variables('functionAppName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "hostingEnvironment": "",
+                "clientAffinityEnabled": false,
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(variables('functionAppName'))]"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "WEBSITE_MAX_DYNAMIC_APPLICATION_SCALE_OUT",
+                            "value": "1"
+                        },
+                        {
+                            "name": "RequestBinRenderer",
+                            "value": "[parameters('RequestBinRenderer')]"
+                        },
+                        {
+                            "name": "RequestBinMaxSize",
+                            "value": "[int(parameters('RequestBinMaxSize'))]"
+                        },
+                      {
+                        "name": "RequestBodyMaxLength",
+                        "value": "[int(parameters('RequestBodyMaxLength'))]"
+                      }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+                "[resourceId('microsoft.insights/components', variables('applicationInsightsName'))]"
+            ],
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "[variables('repoURL')]",
+                        "branch": "[variables('branch')]",
+                        "IsManualIntegration": true
+                    }
+                }
+            ]
+        }
+    ]
+}

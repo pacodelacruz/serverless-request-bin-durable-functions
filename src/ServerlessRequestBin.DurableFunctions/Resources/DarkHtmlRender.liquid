@@ -1,0 +1,165 @@
+﻿<html>
+    <title>Serverless Http Request Bin</title>
+    <style type="text/css">
+        body {
+            font-family: Consolas, Arial;
+            color:#eeeeee;
+            background-color: #212121;
+            font-size: 0.90em;
+        }
+        h1 {
+            font-family: Consolas, Arial;
+            text-align: center;
+            color:#eeeeee;
+            width: 100%;
+            background: #5b9aa0;
+            margin: 0 -9999rem;
+            padding: 0.25rem 9999rem;
+        }
+        h2 {
+            width: 100%;
+            background: #393e46;
+            color:#eeeeee;
+            margin: 0 -9999rem;
+            padding: 0.25rem 9999rem;
+        }
+        p.notes {
+            font-size: 0.90em;
+            text-align: right;
+            color:#eeeeee;
+			display:block;
+			width:100%;
+        }
+        table.requestDescription {
+            padding: 0px;
+            margin:0;
+            border-collapse: collapse;
+        }
+        table.settings {
+            padding: 0px;
+            margin:0;
+            border-collapse: collapse;
+        }
+        td {            
+            padding-top: 1px; 
+            padding-bottom: 1px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        td.header {
+            background: #eeeeee;
+            color: #212121;
+            font-weight: bold;
+        }
+        td.key2 {
+            background: #393e46;
+            color:#eeeeee;
+            min-width: 150px;
+            width: 200px;
+            max-width: 250px;
+        }
+        td.value2 {
+            background: #393e46;
+            color:#eeeeee;
+        }
+        td.key3 {
+            background: #393e46;
+            color:#eeeeee;
+            padding-left: 20px;
+            font-size: 0.90em;
+        }
+        td.value3 {
+            background: #292e36;
+            color:#eeeeee;
+            font-size: 0.90em;
+        }
+        td.preformatted {
+            background: #292e36;
+            font-family: monospace;
+            white-space: pre;
+        }
+        p.error {
+            color: #c83349;
+            font-weight: bold;
+        }
+        footer {
+            font-size: 0.90em;
+        }
+        a:link {
+            color: #00adb5;
+        }
+        a:visited {
+            color: #00adb5;
+        }
+        a:hover {
+            color: #eeeeee;
+        }
+        a:active {
+            color: #00adb5;;
+        }
+        hr { 
+            display: block;
+            margin-before: 0.5em;
+            margin-after: 0.5em;
+            margin-start: auto;
+            margin-end: auto;
+            overflow: hidden;
+            border-style: inset;
+            border-width: 1px;
+        }           
+        * {
+            margin-top: 0;
+        }       
+    </style>
+    <h1>Serverless Http Request Bin</h1>
+    <h2>Bin: {{BinUrl}}</h2>
+    <body>
+		<p class="notes">Last Updated (UTC): {{Timestamp}}</p>
+		{% if RequestHistoryItems.size > 0 %}
+			{% for Request in RequestHistoryItems %}
+			<br/>
+        
+			<table class="requestDescription" width="100%">
+				<tr><td class="header" colspan="2">{{Request.Method}} {{Request.Path}}</td></tr>
+				<tr><td class="key2">Timestamp (UTC)</td><td class="value2">{{Request.Timestamp}}</td></tr>
+				<tr><td class="key2">SourceIp</td><td class="value2">{{Request.SourceIp}}</td></tr>            
+				<tr><td class="key2" colspan="2">Query</td</tr>            
+				{% for Param in Request.QueryParams %}
+				<tr><td class="key3"><pre>{{Param.Key}}</pre></td><td class="value3"><pre>{{Param.Value}}</pre></td></tr>
+				{% endfor%}
+				<tr><td class="key2" colspan="2">Headers</td</tr>
+				{% for Header in Request.Headers %}
+				<tr><td class="key3"><pre>{{Header.Key}}</pre></td><td class="value3"><pre>{{Header.Value}}</pre></td></tr>
+				{% endfor%}     
+				<tr><td class="key2" colspan="2">Body</td</tr>      
+				<tr><td class="preformatted" colspan="2"><pre>{{Request.Body}}</pre></td></tr>
+			</table>
+			<hr/>
+			{% endfor %}
+		{% endif %}
+		{% if ErrorMessage != blank %}
+			<br/>
+			<p class="error">{{ErrorMessage}}</p>
+		{% endif %}
+
+		<br/>
+		<table class="settings" width="350">       
+			<tr><td class="key2" colspan="2">Request Bin Settings</td</tr>            
+			<tr><td class="key3"><pre>Bin Max Size</pre></td><td class="value3"><pre>{{Settings.RequestBinMaxSize}} requests</pre></td></tr>
+			<tr><td class="key3"><pre>Body Max Length</pre></td><td class="value3"><pre>{{Settings.RequestBodyMaxLength}} chars</pre></td></tr>
+		</table>
+
+		<footer>
+			<br/>
+			<hr/>
+			<p>
+			Created by <a href="https://twitter.com/pacodelacruz">Paco de la Cruz</a><br/>
+			Powered by Durable Functions<br/>
+			<a href="https://github.com/pacodelacruz/serverless-request-bin-durable-functions">Source Code and Deployment</a><br/>
+			</p>
+			<br/>
+			The Serverless Http Request Bin has been designed for personal use.<br/>
+			Bins are persisted using Durable Entities of Durable Functions.
+		</footer>
+    </body>
+</html>

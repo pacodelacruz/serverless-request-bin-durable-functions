@@ -1,0 +1,61 @@
+@localBasePath=http://localhost:7071
+@afBasePath=https://afreqbin-func.azurewebsites.net
+@basePath={{localBasePath}}
+
+GET {{basePath}}/12345?a=1&b=2
+x-my-header:1234567890                
+
+###
+POST {{basePath}}/12345
+x-my-header:1234567890
+
+<xml>Hello from VS CODE!</xml>
+
+
+###
+PUT {{basePath}}/12345?a=1&b=2
+x-my-header:1234567890
+
+<xml>Hello from VS CODE!</xml>
+1 
+  2
+    3
+      4
+        5
+          6
+            7
+              8
+                9
+
+###
+PATCH {{basePath}}/12345?a=1&b=2
+x-my-header:1234567890
+
+<xml>Hello from VS CODE!</xml>
+1 
+  2
+    3
+      4
+        5
+          6
+            7
+              8
+                9
+
+###
+HEAD {{basePath}}/12345?a=1&b=2
+
+###
+OPTIONS {{basePath}}/12345?a=1&b=2
+
+###
+DELETE {{basePath}}/12345?a=1&b=2
+
+###
+TRACE {{basePath}}/12345?a=1&b=2
+
+###
+GET {{basePath}}/history/12345
+
+###
+DELETE {{basePath}}/history/12345
