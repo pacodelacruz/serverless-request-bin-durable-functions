@@ -48,6 +48,7 @@ namespace ServerlessRequestBin.DurableFunctions
                 var requestDescription = await RequestBinService.GetRequestDescriptionAsync(request);
                 var encodedBinId = RequestBinService.EncodeBinId(binId);
 
+                //Send a one-way message to an entity (via a queue) using a proxy object for type-safe calls. 
                 await client.SignalEntityAsync<IRequestBin>(encodedBinId, x => x.Add(requestDescription));
 
                 log.LogInformation(new EventId(110), "{BinId}, {Message}", binId, $"Request for bin '{binId}' stored.");

@@ -22,10 +22,12 @@ namespace ServerlessRequestBin.DurableFunctions
     public class GetBin
     {
         private readonly IRequestBinService RequestBinService;
+        private readonly IRequestBinRenderer RequestBinRenderer;
 
-        public GetBin(IRequestBinService requestBinService)
+        public GetBin(IRequestBinService requestBinService, IRequestBinRenderer requestBinRenderer)
         {
             RequestBinService = requestBinService;
+            RequestBinRenderer = requestBinRenderer;
         }
 
         [FunctionName("GetBin")]
@@ -45,13 +47,16 @@ namespace ServerlessRequestBin.DurableFunctions
                 {
                     log.LogError(new EventId(291), "{BinId}, {Message}", binId, $"Invalid Bin Id '{binId}'.");
                     return NewHtmlContentResult(HttpStatusCode.BadRequest,
-                                            RequestBinService.RenderToString(binId, "Invalid", null, validationMessage));
+                                            RequestBinRenderer.RenderToString(binId, "Invalid", null, validationMessage));
                 }
                 var binUrl = $"http{(request.IsHttps ? "s" : "")}://{request.Host}{request.Path.ToString().Replace("/history", "")}";
                 var encodedBinId = RequestBinService.EncodeBinId(binId);
                 var durableRequestBinId = new EntityId(nameof(RequestBin), encodedBinId);
+                
+                //Read the state of a Durable Entity
                 var durableRequestBin = await client.ReadEntityStateAsync<RequestBin>(durableRequestBinId);
-                var requestBinHistory = RequestBinService.RenderToString(binId, binUrl, durableRequestBin.EntityState.RequestHistoryItems);
+
+                var requestBinHistory = RequestBinRenderer.RenderToString(binId, binUrl, durableRequestBin.EntityState.RequestHistoryItems);
                 log.LogInformation(new EventId(210), "{BinId}, {Message}", binId, $"Request history for bin '{binId}' returned successfully.");
                 return NewHtmlContentResult(HttpStatusCode.OK, requestBinHistory);
             }
@@ -61,7 +66,7 @@ namespace ServerlessRequestBin.DurableFunctions
                 try
                 {
                     return NewHtmlContentResult(HttpStatusCode.InternalServerError,
-                                            RequestBinService.RenderToString(binId, "", null, $"500 Internal Server Error. Execution Id: '{context.InvocationId.ToString()}'"));
+                                            RequestBinRenderer.RenderToString(binId, "", null, $"500 Internal Server Error. Execution Id: '{context.InvocationId.ToString()}'"));
                 }
                 catch (Exception)
                 {

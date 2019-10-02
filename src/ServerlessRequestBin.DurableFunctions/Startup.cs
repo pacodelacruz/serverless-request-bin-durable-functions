@@ -23,6 +23,17 @@ namespace ServerlessRequestBin.DurableFunctions
                 { configuration.Bind(configSection); });
 
             builder.Services.AddSingleton<IRequestBinService, RequestBinService>();
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RequestBinRenderer")) ||
+                Environment.GetEnvironmentVariable("RequestBinRenderer").ToLower() == "liquid")
+            {
+                //HtmlRequestBinRenderer is the default implementation
+                builder.Services.AddSingleton<IRequestBinRenderer, LiquidRequestBinRenderer>();
+            }
+            else
+            {
+                throw new NotImplementedException($"RequestBinRenderer '{string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RequestBinRenderer"))}' not implemented.");
+            }
+
         }
     }
 }

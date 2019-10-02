@@ -3,11 +3,14 @@
 @basePath={{localBasePath}}
 
 GET {{basePath}}/12345?a=1&b=2
-x-my-header:1234567890                
+x-my-header:1234567890
+DISGUISED-HOST:xyz
 
 ###
 POST {{basePath}}/12345
 x-my-header:1234567890
+DISGUISED-HOST:xyz
+X-SITE-DEPLOYMENT-ID:xyz
 
 <xml>Hello from VS CODE!</xml>
 

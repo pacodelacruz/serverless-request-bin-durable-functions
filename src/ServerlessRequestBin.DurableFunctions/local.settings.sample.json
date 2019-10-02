@@ -7,6 +7,7 @@
     "RequestBinRendererTemplate": "DarkHtmlRender.liquid",
     "RequestBinMaxSize": 20,
     "RequestBodyMaxLength": 128000,
+    "HeadersToIgnore": "DISGUISED-HOST|X-SITE-DEPLOYMENT-ID|WAS-DEFAULT-HOSTNAME|X-AppService-Proto",
     "APPINSIGHTS_INSTRUMENTATIONKEY": null
   }
 }

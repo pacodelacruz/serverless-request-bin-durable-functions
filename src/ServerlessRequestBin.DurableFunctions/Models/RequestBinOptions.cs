@@ -15,5 +15,6 @@ namespace ServerlessRequestBin.DurableFunctions.Models
         public string RequestBinRendererTemplate { get; set; } = "DarkHtmlRender.liquid";
         public int RequestBinMaxSize { get; set; } = 20;
         public int RequestBodyMaxLength { get; set; } = 128000;
+        public string HeadersToIgnore { get; set; } = "";
     }
 }

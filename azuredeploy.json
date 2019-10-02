@@ -64,6 +64,13 @@
       "metadata": {
         "description": "Max number of characters to read and store of a request body. If a request body is larger than this limit, the body will be truncated."
       }
+    },
+    "HeadersToIgnore": {
+      "type": "string",
+      "defaultValue": "DISGUISED-HOST|X-SITE-DEPLOYMENT-ID|WAS-DEFAULT-HOSTNAME|X-AppService-Proto",
+      "metadata": {
+        "description": "Azure Functions add some headers to HTTP requests. If you prefer a cleaner request bin, you can be ignored HTTP headers. Specify the headers to ignore as a pipe-delimited list."
+      }
     }
   },
   "variables": {

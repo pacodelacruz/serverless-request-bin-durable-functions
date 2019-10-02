@@ -8,6 +8,14 @@ namespace ServerlessRequestBin.DurableFunctions.Models
     [JsonObject(MemberSerialization.OptOut)]
     public class HttpRequestBinHistory
     {
+
+        public string BinId;
+        public string BinUrl;
+        public string ErrorMessage;
+        public DateTime Timestamp;
+        public IList<HttpRequestDescription> RequestHistoryItems;
+        public HttpRequestBinSettings Settings;
+
         public HttpRequestBinHistory(RequestBinOptions options)
         {
             Settings = new HttpRequestBinSettings();
@@ -17,15 +25,8 @@ namespace ServerlessRequestBin.DurableFunctions.Models
 
         public HttpRequestBinHistory()
         {
-
+            
         }
-
-        public string BinId;
-        public string BinUrl;
-        public string ErrorMessage;
-        public DateTime Timestamp;
-        public IList<HttpRequestDescription> RequestHistoryItems;
-        public HttpRequestBinSettings Settings;
 
         public class HttpRequestBinSettings
         {
