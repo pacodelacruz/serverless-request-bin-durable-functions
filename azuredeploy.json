@@ -77,7 +77,7 @@
     "functionAppName": "[concat(parameters('appName'), '-func')]",
     "hostingPlanName": "[concat(parameters('appName'), '-plan')]",
     "applicationInsightsName": "[concat(parameters('appName'), '-appins')]",
-    "repoURL": "https://github.com/pacodelacruz/serverless-request-bin-azure-functions.git",
+    "repoURL": "https://github.com/pacodelacruz/serverless-request-bin-durable-functions.git",
     "branch": "master",
     "storageAccountPrefix": "[if(greaterOrEquals(length(parameters('appName')), 9), substring(parameters('appName'), 0, 9), substring(parameters('appName'), 0, length(parameters('appName'))))]",
     "storageAccountName": "[concat(variables('storageAccountPrefix'), 'st', uniquestring(resourceGroup().id))]",
