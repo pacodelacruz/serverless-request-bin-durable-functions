@@ -67,7 +67,7 @@
     },
     "HeadersToIgnore": {
       "type": "string",
-      "defaultValue": "DISGUISED-HOST|X-SITE-DEPLOYMENT-ID|WAS-DEFAULT-HOSTNAME|X-AppService-Proto",
+      "defaultValue": "X-SITE-DEPLOYMENT-ID|WAS-DEFAULT-HOSTNAME|X-AppService-Proto",
       "metadata": {
         "description": "Azure Functions add some headers to HTTP requests. If you prefer a cleaner request bin, you can be ignored HTTP headers. Specify the headers to ignore as a pipe-delimited list."
       }
@@ -143,52 +143,60 @@
                 "hostingEnvironment": "",
                 "clientAffinityEnabled": false,
                 "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "AzureWebJobsDashboard",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
-                        },
-                        {
-                            "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
-                        },
-                        {
-                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
-                        },
-                        {
-                            "name": "WEBSITE_CONTENTSHARE",
-                            "value": "[toLower(variables('functionAppName'))]"
-                        },
-                        {
-                            "name": "FUNCTIONS_EXTENSION_VERSION",
-                            "value": "~2"
-                        },
-                        {
-                            "name": "FUNCTIONS_WORKER_RUNTIME",
-                            "value": "dotnet"
-                        },
-                        {
-                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
-                        },
-                        {
-                            "name": "WEBSITE_MAX_DYNAMIC_APPLICATION_SCALE_OUT",
-                            "value": "1"
-                        },
-                        {
-                            "name": "RequestBinRenderer",
-                            "value": "[parameters('RequestBinRenderer')]"
-                        },
-                        {
-                            "name": "RequestBinMaxSize",
-                            "value": "[int(parameters('RequestBinMaxSize'))]"
-                        },
-                      {
-                        "name": "RequestBodyMaxLength",
-                        "value": "[int(parameters('RequestBodyMaxLength'))]"
-                      }
-                    ]
+                  "appSettings": [
+                    {
+                      "name": "AzureWebJobsDashboard",
+                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                    },
+                    {
+                      "name": "AzureWebJobsStorage",
+                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                    },
+                    {
+                      "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
+                    },
+                    {
+                      "name": "WEBSITE_CONTENTSHARE",
+                      "value": "[toLower(variables('functionAppName'))]"
+                    },
+                    {
+                      "name": "FUNCTIONS_EXTENSION_VERSION",
+                      "value": "~2"
+                    },
+                    {
+                      "name": "FUNCTIONS_WORKER_RUNTIME",
+                      "value": "dotnet"
+                    },
+                    {
+                      "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                      "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName')), '2015-05-01').InstrumentationKey]"
+                    },
+                    {
+                      "name": "WEBSITE_MAX_DYNAMIC_APPLICATION_SCALE_OUT",
+                      "value": "1"
+                    },
+                    {
+                      "name": "RequestBinRenderer",
+                      "value": "[parameters('RequestBinRenderer')]"
+                    },
+                    {
+                      "name": "RequestBinRendererTemplate",
+                      "value": "[parameters('RequestBinRendererTemplate')]"
+                    },
+                    {
+                      "name": "RequestBinMaxSize",
+                      "value": "[int(parameters('RequestBinMaxSize'))]"
+                    },
+                    {
+                      "name": "RequestBodyMaxLength",
+                      "value": "[int(parameters('RequestBodyMaxLength'))]"
+                    },
+                    {
+                      "name": "HeadersToIgnore",
+                      "value": "[parameters('HeadersToIgnore')]"
+                    }
+                  ]
                 }
             },
             "dependsOn": [
