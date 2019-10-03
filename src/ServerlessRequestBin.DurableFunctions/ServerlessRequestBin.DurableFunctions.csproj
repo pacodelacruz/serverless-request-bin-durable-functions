@@ -23,9 +23,6 @@
     <EmbeddedResource Include="Resources\DarkHtmlRender.liquid" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md" Link="README.md" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="DotLiquid" Version="2.0.314" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.0.0-beta2" />

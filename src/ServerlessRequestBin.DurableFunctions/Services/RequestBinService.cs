@@ -14,21 +14,13 @@ using System.Web;
 
 namespace ServerlessRequestBin.DurableFunctions.Services
 {
-    //TODO: Split Rendering Functionality
     public class RequestBinService : IRequestBinService
     {
         private readonly IOptions<RequestBinOptions> Options;
-        private static Template LiquidTemplate;
 
         public RequestBinService(IOptions<RequestBinOptions> options)
         {
             Options = options;
-            // Read and load the Liquid Template from an embedded resource
-            using (var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(
-                $"{Assembly.GetExecutingAssembly().GetName().Name}.Resources.{options.Value.RequestBinRendererTemplate}")))
-            {
-                LiquidTemplate = Template.Parse(reader.ReadToEnd());
-            }
         }
         public bool IsBinIdValid(string binId, out string validationMessage)
         {
@@ -79,7 +71,6 @@ namespace ServerlessRequestBin.DurableFunctions.Services
                 requestDescription.QueryParams.Add(new KeyValuePair<string, string>(param.Key, param.Value));
             }
 
-            //TODO: Remove headers from Azure Functions
             foreach (var header in request.Headers)
             {
                 if (!HeadersToIgnore.Contains(header.Key.ToLower()))

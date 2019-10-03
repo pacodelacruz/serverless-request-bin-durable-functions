@@ -1,6 +1,6 @@
 @localBasePath=http://localhost:7071
-@afBasePath=https://afreqbin-func.azurewebsites.net
-@basePath={{localBasePath}}
+@afBasePath=https://myserverlessreqbin-func.azurewebsites.net
+@basePath={{afBasePath}}
 
 GET {{basePath}}/12345?a=1&b=2
 x-my-header:1234567890
@@ -20,30 +20,14 @@ PUT {{basePath}}/12345?a=1&b=2
 x-my-header:1234567890
 
 <xml>Hello from VS CODE!</xml>
-1 
-  2
-    3
-      4
-        5
-          6
-            7
-              8
-                9
+
 
 ###
 PATCH {{basePath}}/12345?a=1&b=2
 x-my-header:1234567890
 
 <xml>Hello from VS CODE!</xml>
-1 
-  2
-    3
-      4
-        5
-          6
-            7
-              8
-                9
+
 
 ###
 HEAD {{basePath}}/12345?a=1&b=2

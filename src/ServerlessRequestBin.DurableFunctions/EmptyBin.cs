@@ -41,7 +41,7 @@ namespace ServerlessRequestBin.DurableFunctions
 
                 var encodedBinId = RequestBinService.EncodeBinId(binId);
                 
-                //Send a one-way message to an entity (via a queue) using a proxy object for type-safe calls. 
+                //Send a one-way message to an entity (via an abstracted queue) using a proxy object for type-safe calls. 
                 await client.SignalEntityAsync<IRequestBin>(encodedBinId, x => x.Empty());
 
                 log.LogInformation(new EventId(310), "{BinId}, {Message}", binId, $"Request history for bin '{binId}' has been deleted.");
