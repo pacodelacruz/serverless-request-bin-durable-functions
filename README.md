@@ -21,7 +21,7 @@ The Function App is composed of four functions. Functions are just wrappers that
 
 ## Benefits of the Serverless Request Bin
 
-If you deploy your own instance of the Serverless Request Bin, you would get some benefits, including:
+If you deploy your own instance of the Stateful Serverless Request Bin, you would get some benefits, including:
 
 * **Owning the Request Bin**, thus having no risk of someone else capturing your sensitive HTTP Requests.
 * Having a very **cost-effective **solution, considering the free executions you get and the low cost associated with the corresponding storage.

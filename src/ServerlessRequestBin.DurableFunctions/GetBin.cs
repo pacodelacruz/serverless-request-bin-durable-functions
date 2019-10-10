@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ServerlessRequestBin.DurableFunctions.Services;
 using System.Text;
+using ServerlessRequestBin.DurableFunctions.Models;
 
 namespace ServerlessRequestBin.DurableFunctions
 {
@@ -55,8 +56,8 @@ namespace ServerlessRequestBin.DurableFunctions
                 
                 //Read the state of a Durable Entity
                 var durableRequestBin = await client.ReadEntityStateAsync<RequestBin>(durableRequestBinId);
+                var requestBinHistory = RequestBinRenderer.RenderToString(binId, binUrl, durableRequestBin.EntityState?.RequestHistoryItems);
 
-                var requestBinHistory = RequestBinRenderer.RenderToString(binId, binUrl, durableRequestBin.EntityState.RequestHistoryItems);
                 log.LogInformation(new EventId(210), "{BinId}, {Message}", binId, $"Request history for bin '{binId}' returned successfully.");
                 return NewHtmlContentResult(HttpStatusCode.OK, requestBinHistory);
             }

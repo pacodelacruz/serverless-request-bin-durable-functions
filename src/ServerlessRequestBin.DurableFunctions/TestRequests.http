@@ -1,48 +1,58 @@
 @localBasePath=http://localhost:7071
-@afBasePath=https://myserverlessreqbin-func.azurewebsites.net
+@afBasePath=https://testingdurable-func.azurewebsites.net
 @basePath={{afBasePath}}
+@binId=123456789
 
-GET {{basePath}}/12345?a=1&b=2
+GET {{basePath}}/{{binId}}?a=1&b=2
 x-my-header:1234567890
 DISGUISED-HOST:xyz
 
 ###
-POST {{basePath}}/12345
+POST {{basePath}}/{{binId}}
 x-my-header:1234567890
 DISGUISED-HOST:xyz
 X-SITE-DEPLOYMENT-ID:xyz
 
-<xml>Hello from VS CODE!</xml>
+{
+  "question": "Why are people affraid of computers?",
+  "answer": "They byte!"
+}
 
 
 ###
-PUT {{basePath}}/12345?a=1&b=2
+PUT {{basePath}}/{{binId}}?a=1&b=2
 x-my-header:1234567890
 
-<xml>Hello from VS CODE!</xml>
+{
+  "question": "Why do Java programmers have to wear glasses?",
+  "answer": "Because they don't C#"
+}
 
 
 ###
-PATCH {{basePath}}/12345?a=1&b=2
+PATCH {{basePath}}/{{binId}}?a=1&b=2
 x-my-header:1234567890
 
-<xml>Hello from VS CODE!</xml>
+{
+  "question": "What's another name for a computer virus",
+  "answer": "A terminal inllness"
+}
 
 
 ###
-HEAD {{basePath}}/12345?a=1&b=2
+HEAD {{basePath}}/{{binId}}?a=1&b=2
 
 ###
-OPTIONS {{basePath}}/12345?a=1&b=2
+OPTIONS {{basePath}}/{{binId}}?a=1&b=2
 
 ###
-DELETE {{basePath}}/12345?a=1&b=2
+DELETE {{basePath}}/{{binId}}?a=1&b=2
 
 ###
-TRACE {{basePath}}/12345?a=1&b=2
+TRACE {{basePath}}/{{binId}}?a=1&b=2
 
 ###
-GET {{basePath}}/history/12345
+GET {{basePath}}/history/{{binId}}
 
 ###
-DELETE {{basePath}}/history/12345
+DELETE {{basePath}}/history/{{binId}}
